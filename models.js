@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+import mongoose, { model } from 'mongoose';
 const { Schema } = mongoose;
 
 const userSchema = new Schema({
@@ -35,8 +35,8 @@ const messageSchema = new Schema({
   createdAt: { type: Date, default: Date.now },
 });
 
-const User = mongoose.model('User', userSchema);
-const Post = mongoose.model('Post', postSchema);
-const Message = mongoose.model('Message', messageSchema);
+const User = model('User', userSchema);
+const Post = model('Post', postSchema);
+const Message = model('Message', messageSchema);
 
-module.exports = { User, Post, Message };
+export default { User, Post, Message };
