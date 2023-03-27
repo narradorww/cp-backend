@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Success</title>
+</head>
+<body>
+    <h1>Autenticação bem-sucedida!</h1>
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const token = urlParams.get('token');
+        if (token) {
+            localStorage.setItem('token', token);
+            // Redirecionar para a página inicial ou outra página conforme necessário
+            // window.location.href = '/';
+        } else {
+            document.write('<h1>Falha na autenticação</h1>');
+        }
+    </script>
+</body>
+</html>
