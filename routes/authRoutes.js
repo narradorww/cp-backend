@@ -36,17 +36,6 @@ router.get('/protected', authenticateJWT, (req, res) => {
   res.json(user);
 });
 
-router.get('/success', (req, res) => {
-  const token = req.query.token;
-  if (token) {
-    // Aqui você pode renderizar uma página de sucesso ou redirecionar para outra rota
-    // Por exemplo, você pode enviar o token para o front-end e armazená-lo no localStorage
-    res.redirect(`/sucess.html`);
-  } else {
-    res.status(400).send('<h1>Falha na autenticação</h1>');
-  }
-});
-;
 
 router.post('/refresh-token', async (req, res) => {
   const { refreshToken } = req.body;
