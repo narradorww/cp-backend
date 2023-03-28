@@ -2,62 +2,66 @@ import Models from '../models/models.js';
 
 const { User, Post, Message } = Models;
 
-const createPost = async (req, res) => {
+
+// Get all posts
+export const getPosts = async (req, res) => {
   try {
-    const { userId, title, description, type } = req.body;
-
-    // Cria um novo post com os dados recebidos do cliente
-    const newPost = new Post({
-      userId,
-      title,
-      description,
-      type,
-    });
-
-    // Salva o post no banco de dados
-    const savedPost = await newPost.save();
-
-    // Retorna o post criado para o cliente
-    res.status(201).json(savedPost);
+    const posts = await Post.find().populate('userId', 'displayName email');
+    res.status(200).json(posts);
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Erro ao criar post' });
+    res.status(500).json({ message: 'Erro ao buscar os posts', error });
   }
 };
 
-const updatePost = async (req, res) => {
+// Get a single post
+export const getPost = async (req, res) => {
   try {
-    const { postId } = req.params;
-    const { title, description } = req.body;
-
-    // Busca o post no banco de dados pelo ID e atualiza os campos passados pelo cliente
-    const updatedPost = await Post.findByIdAndUpdate(
-      postId,
-      { title, description },
-      { new: true }
-    );
-
-    // Retorna o post atualizado para o cliente
-    res.status(200).json(updatedPost);
+    const post = await Post.findById(req.params.id).populate('userId', 'displayName email');
+    if (post) {
+      res.status(200).json(post);
+    } else {
+      res.status(404).json({ message: 'Post não encontrado' });
+    }
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Erro ao atualizar post' });
+    res.status(500).json({ message: 'Erro ao buscar o post', error });
   }
 };
 
-const deletePost = async (req, res) => {
+// Create a new post
+export const createPost = async (req, res) => {
   try {
-    const { postId } = req.params;
-
-    // Remove o post do banco de dados pelo ID
-    await Post.findByIdAndRemove(postId);
-
-    // Retorna uma mensagem de sucesso para o cliente
-    res.status(200).json({ message: 'Post removido com sucesso' });
+    const newPost = new Post({ ...req.body, userId: req.user._id });
+    await newPost.save();
+    res.status(201).json(newPost);
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Erro ao remover post' });
+    res.status(500).json({ message: 'Erro ao criar o post', error });
   }
 };
 
-export { createPost, updatePost, deletePost };
+// Update a post
+export const updatePost = async (req, res) => {
+  try {
+    const post = await Post.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    if (post) {
+      res.status(200).json(post);
+    } else {
+      res.status(404).json({ message: 'Post não encontrado' });
+    }
+  } catch (error) {
+    res.status(500).json({ message: 'Erro ao atualizar o post', error });
+  }
+};
+
+// Delete a post
+export const deletePost = async (req, res) => {
+  try {
+    const post = await Post.findByIdAndDelete(req.params.id);
+    if (post) {
+      res.status(200).json({ message: 'Post excluído com sucesso' });
+    } else {
+      res.status(404).json({ message: 'Post não encontrado' });
+    }
+  } catch (error) {
+    res.status(500).json({ message: 'Erro ao excluir o post', error });
+  }
+};
