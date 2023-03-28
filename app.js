@@ -26,6 +26,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 
 app.use(express.json());
+app.use(authenticatedMiddleware);
 app.use('/auth', authRoutes);
 app.use('/posts', postRoutes);
 
@@ -52,5 +53,3 @@ app.listen(PORT, () => {
 app.get('/', (req, res) => {
   res.send('Bem-vindo ao Compadre Padeiro!');
 });
-
-// app.use(authenticatedMiddleware);
