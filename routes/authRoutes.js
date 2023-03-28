@@ -17,14 +17,14 @@ router.get('/google', passport.authenticate('google', { scope: ['profile', 'emai
 
 router.get('/google/callback', passport.authenticate('google', { session: false }), (req, res) => {
   const token = generateJwtToken(req.user);
-  res.redirect(`/success?token=${token}`);
+  res.redirect(`http://localhost:3000/bakery?token=${token}`);
 });
 
 router.get('/facebook', passport.authenticate('facebook', { scope: ['email'] }));
 
 router.get('/facebook/callback', passport.authenticate('facebook', { session: false }), (req, res) => {
   const token = generateJwtToken(req.user);
-  res.redirect(`/success?token=${token}`);
+  res.redirect(`http://localhost:3000/bakery?token=${token}`);
 });
 
 router.get('/protected', authenticateJWT, (req, res) => {
@@ -35,20 +35,14 @@ router.get('/protected', authenticateJWT, (req, res) => {
 router.get('/success', (req, res) => {
   const token = req.query.token;
   if (token) {
-    // Substitua o conteúdo do arquivo 'success.html' com o token real
-    const filePath = path.join(__dirname, '../public/success.html');
-    fs.readFile(filePath, 'utf8', (err, data) => {
-      if (err) {
-        console.error(err);
-        res.status(500).send('<h1>Erro interno do servidor</h1>');
-      } else {
-        const result = data.replace('YOUR_TOKEN', token);
-        res.send(result);
-      }
-    });
+    // Aqui você pode renderizar uma página de sucesso ou redirecionar para outra rota
+    // Por exemplo, você pode enviar o token para o front-end e armazená-lo no localStorage
+    res.redirect(`/sucess.html`);
   } else {
     res.status(400).send('<h1>Falha na autenticação</h1>');
   }
 });
+;
+
 
 export default router;
