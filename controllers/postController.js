@@ -29,14 +29,28 @@ export const getPost = async (req, res) => {
 
 // Create a new post
 export const createPost = async (req, res) => {
+  function getUserID(userData){
+    return userData.user._id;
+  }
   try {
-    const newPost = new Post({ ...req.body, userId: req.user._id });
-    await newPost.save();
-    res.status(201).json(newPost);
+    console.log('Objeto enviado:', req.body);
+    console.log('O usuario é:', req.user); 
+        // adicionando o log
+    const { title, description, type } = req.body;
+    const data = req.user
+    const userId = getUserID(data);
+    console.log('O _id do usuário é:', userId);
+    const post = new Post({ title, description, type, userId });
+
+    const result = await post.save();
+
+    res.status(201).json({ message: 'Post criado com sucesso', post: result });
   } catch (error) {
+    console.error(error);
     res.status(500).json({ message: 'Erro ao criar o post', error });
   }
 };
+
 
 // Update a post
 export const updatePost = async (req, res) => {
@@ -54,14 +68,25 @@ export const updatePost = async (req, res) => {
 
 // Delete a post
 export const deletePost = async (req, res) => {
+  const postId = req.params.id;
+  const userId = req.user._id;
+
   try {
-    const post = await Post.findByIdAndDelete(req.params.id);
-    if (post) {
-      res.status(200).json({ message: 'Post excluído com sucesso' });
-    } else {
-      res.status(404).json({ message: 'Post não encontrado' });
+    const post = await Post.findOne({ _id: postId });
+
+    if (!post) {
+      return res.status(404).json({ error: 'Post not found' });
     }
+
+    if (post.userId.toString() !== userId.toString() && !req.user.isAdmin) {
+      return res.status(403).json({ error: 'Not authorized to delete this post' });
+    }
+
+    await post.remove();
+
+    res.json({ message: 'Post deleted successfully' });
   } catch (error) {
-    res.status(500).json({ message: 'Erro ao excluir o post', error });
+    console.error(error);
+    res.status(500).json({ error: 'Failed to delete post' });
   }
 };

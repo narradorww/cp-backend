@@ -2,6 +2,7 @@ import mongoose, { model } from 'mongoose';
 const { Schema } = mongoose;
 
 const userSchema = new Schema({
+  _id: { type: Schema.Types.ObjectId, required: true, auto: true },
   username: { type: String, unique: true, required: true },
   displayName: String,
   email: { type: String, unique: true, required: true },
@@ -15,6 +16,7 @@ const userSchema = new Schema({
   },
   createdAt: { type: Date, default: Date.now },
   updatedAt: { type: Date, default: Date.now },
+  role: { type: String, enum: ['admin', 'moderator', 'user'], default: 'admin' },
 });
 
 const postSchema = new Schema({

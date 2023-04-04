@@ -3,7 +3,7 @@ import express from 'express';
 import passport from 'passport';
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
-import authenticateJWT from '../middleware/authenticateJWT.js';
+import {authenticateJWT }from '../middleware/authenticateJWT.js';
 
 dotenv.config();
 
@@ -55,6 +55,11 @@ router.post('/refresh-token', async (req, res) => {
   } catch (error) {
     res.status(403).json({ error: 'Invalid refresh token' });
   }
+});
+
+router.get('/userinfo', authenticateJWT, (req, res) => {
+  const user = req.user;
+  res.json(user);
 });
 
 
