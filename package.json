@@ -3,11 +3,12 @@
   "version": "1.0.0",
   "type": "module",
   "description": "",
-  "main": "index.js",
+  "main": "server.js",
   "scripts": {
     "start": "concurrently \"npm run server\" \"npm run client\"",
-    "server": "node -r dotenv/config app.js",
-    "client": "cd client && npm start"
+    "server": "node -r dotenv/config server.js",
+    "client": "cd client && npm start",
+    "dev": "nodemon server.js"
   },
   "keywords": [],
   "author": "",
@@ -23,6 +24,7 @@
     "mongoose": "^7.0.3",
     "passport": "^0.6.0",
     "passport-facebook": "^3.0.0",
+    "passport-facebook-token": "^4.0.0",
     "passport-google-oauth20": "^2.0.0",
     "passport-jwt": "^4.0.1",
     "passport-local": "^1.0.0"
