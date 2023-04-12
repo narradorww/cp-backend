@@ -14,9 +14,11 @@ const recipeSchema = new Schema({
   preparationTime: Number,
   fermentationTime: Number,
   materials: [String],
+  instructions: String,
   bakerId: { type: Schema.Types.ObjectId, ref: 'Baker' },
 });
 
 const Recipe = mongoose.model('Recipe', recipeSchema);
 
 export default Recipe;
+

@@ -5,6 +5,12 @@ import passport from 'passport';
 import passportGoogle from 'passport-google-oauth20';
 import pkg from 'passport-facebook-token';
 import dotenv from 'dotenv';
+import recipeRoutes from './routes/recipeRoutes.js';
+import bakerRoutes from './routes/bakerRoutes.js';
+import postRoutes from './routes/postRoutes.js';
+import messageRoutes from './routes/messageRoutes.js';
+import donationRoutes from './routes/donationRoutes.js';
+
 const { Strategy: FacebookTokenStrategy } = pkg;
 const { Strategy: GoogleStrategy } = passportGoogle;
 
@@ -56,8 +62,12 @@ mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTop
   .catch(err => console.log(err));
 
 // Routes
-// Implement routes for bakers, recipes, posts, messages, and sourdough starter donations here
+app.use('/api/recipes', recipeRoutes);
+app.use('/api/bakers', bakerRoutes);
+app.use('/api/posts', postRoutes);
+app.use('/api/messages', messageRoutes);
+app.use('/api/sourdoughstarterdonations', donationRoutes);
 
 // Start the server
-const port = process.env.PORT || 5000;
+const port = process.env.PORT || 3001;
 app.listen(port, () => console.log(`Server running on port ${port}`));

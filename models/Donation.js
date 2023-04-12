@@ -2,7 +2,7 @@ import mongoose from 'mongoose';
 
 const { Schema } = mongoose;
 
-const sourdoughStarterDonationSchema = new Schema({
+const donationSchema = new Schema({
   donorId: { type: Schema.Types.ObjectId, ref: 'Baker' },
   recipientId: { type: Schema.Types.ObjectId, ref: 'Baker' },
   status: {
@@ -15,7 +15,7 @@ const sourdoughStarterDonationSchema = new Schema({
 
 const SourdoughStarterDonation = mongoose.model(
   'SourdoughStarterDonation',
-  sourdoughStarterDonationSchema
+  donationSchema
 );
 
 export default SourdoughStarterDonation;
