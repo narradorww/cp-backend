@@ -43,13 +43,21 @@ router.patch('/:id', getPost, async (req, res) => {
 });
 
 // Delete a post
-router.delete('/:id', getPost, async (req, res) => {
+router.delete('/:id', async (req, res) => {
   try {
-    await res.post.remove();
-    res.json({ message: 'Deleted post' });
+    const postId = req.params.id;
+    const deletedPost = await Post.findByIdAndRemove(postId);
+
+    if (!deletedPost) {
+      res.status(404).json({ message: 'Post not found' });
+    }
+    else {
+      res.json({ message: 'Deleted post' });
+    }
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
+
 });
 
 // Middleware to fetch a post by ID

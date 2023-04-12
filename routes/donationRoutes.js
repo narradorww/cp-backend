@@ -1,10 +1,10 @@
-import express from 'express';
-import SourdoughStarterDonation from '../models/Donation.js';
+import express from "express";
+import SourdoughStarterDonation from "../models/Donation.js";
 
 const router = express.Router();
 
 // Get all donations
-router.get('/', async (req, res) => {
+router.get("/", async (req, res) => {
   try {
     const donations = await SourdoughStarterDonation.find();
     res.json(donations);
@@ -14,12 +14,19 @@ router.get('/', async (req, res) => {
 });
 
 // Get a donation by ID
-router.get('/:id', getDonation, (req, res) => {
+router.get("/:id", getDonation, (req, res) => {
   res.json(res.donation);
 });
 
-// Create a new donation
-router.post('/', async (req, res) => {
+// Create a new donation (can be used for both request and offer)
+router.post("/", async (req, res) => {
+  const { donorId, recipientId, status } = req.body;
+
+  if ((donorId && recipientId) || (!donorId && !recipientId)) {
+    res.status(400).json({ message: "Invalid donation data" });
+    return;
+  }
+
   const donation = new SourdoughStarterDonation(req.body);
 
   try {
@@ -31,7 +38,7 @@ router.post('/', async (req, res) => {
 });
 
 // Update a donation
-router.patch('/:id', getDonation, async (req, res) => {
+router.patch("/:id", getDonation, async (req, res) => {
   Object.assign(res.donation, req.body);
 
   try {
@@ -43,10 +50,18 @@ router.patch('/:id', getDonation, async (req, res) => {
 });
 
 // Delete a donation
-router.delete('/:id', getDonation, async (req, res) => {
+router.delete("/:id", async (req, res) => {
   try {
-    await res.donation.remove();
-    res.json({ message: 'Deleted donation' });
+    const donationId = req.params.id;
+    const deletedDonation = await SourdoughStarterDonation.findByIdAndRemove(
+      donationId
+    );
+
+    if (!deletedDonation) {
+      res.status(404).json({ message: "Donation not found" });
+    } else {
+      res.json({ message: "Deleted donation" });
+    }
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
@@ -59,7 +74,7 @@ async function getDonation(req, res, next) {
   try {
     donation = await SourdoughStarterDonation.findById(req.params.id);
     if (!donation) {
-      return res.status(404).json({ message: 'Cannot find donation' });
+      return res.status(404).json({ message: "Cannot find donation" });
     }
   } catch (err) {
     return res.status(500).json({ message: err.message });

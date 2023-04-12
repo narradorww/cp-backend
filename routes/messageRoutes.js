@@ -43,10 +43,17 @@ router.patch('/:id', getMessage, async (req, res) => {
 });
 
 // Delete a message
-router.delete('/:id', getMessage, async (req, res) => {
+router.delete('/:id', async (req, res) => {
   try {
-    await res.message.remove();
+    const messageId = req.params.id;
+    const deletedMessage = await Message.findByIdAndRemove(messageId);
+   
+
+    if (!deletedMessage) {
+      res.status(404).json({ message: 'Message not found' });
+    } else {
     res.json({ message: 'Deleted message' });
+    }
   } catch (err) {
     res.status(500).json({ message: err.message });
   }

@@ -7,7 +7,14 @@ const donationSchema = new Schema({
   recipientId: { type: Schema.Types.ObjectId, ref: 'Baker' },
   status: {
     type: String,
-    enum: ['offered', 'requested', 'accepted', 'declined', 'completed'],
+    enum: [
+      'offered',
+      'requested',
+      'donor_assigned',
+      'recipient_assigned',
+      'completed',
+      'closed'
+    ],
   },
   createdAt: { type: Date, default: Date.now },
   updatedAt: { type: Date, default: Date.now },
