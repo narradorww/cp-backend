@@ -18,3 +18,4 @@ Thumbs.db
 # Arquivos específicos do ambiente de desenvolvimento
 .idea/
 .vscode/
+.vercel
